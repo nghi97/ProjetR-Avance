@@ -1,0 +1,122 @@
+---
+title: "Projet R"
+author: "Nghi"
+date: "2022-12-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Library
+```{r}
+library(questionr)
+library(tidyverse)
+```
+#Importation de fichier
+```{r}
+fct_read <- function(x){
+  read<-read.csv(x,header = T,check.names = F)
+  return(read)
+}
+vague1<-fct_read('D://workspace Code//R//projetannées//cdsp_coco1_2020//cdsp_coco1_2020//donnees_coco1//csv_coco1//fr.cdsp.ddi.elipss.202004coco1.csv')
+vague2<-fct_read('D://workspace Code//R//projetannées//cdsp_coco2_2020//cdsp_coco2_2020//donnees_coco2//csv_coco2//fr.cdsp.ddi.elipss.202004.csv')
+vague3<-fct_read('D://workspace Code//R//projetannées//cdsp_coco3_2020//cdsp_coco3_2020//donnees_coco3//csv_coco3//fr.cdsp.ddi.elipss.202005.csv')
+vague4<-fct_read('D://workspace Code//R//projetannées//cdsp_coco4_2020//cdsp_coco4_2020//donnees_coco4//csv_coco4//fr.cdsp.ddi.elipss.202005.csv')
+vague5<-fct_read('D://workspace Code//R//projetannées//cdsp_coco5_2020//cdsp_coco5_2020//donnees_coco5//csv_coco5//fr.cdsp.ddi.elipss.202005.csv')
+vague6<-fct_read('D://workspace Code//R//projetannées//cdsp_coco6_2020//cdsp_coco6_2020//donnees_coco6//csv_coco6//fr.cdsp.ddi.elipss.202010.csv')
+vague7<-fct_read('D://workspace Code//R//projetannées//cdsp_coco7_2020//cdsp_coco7_2020//donnees_coco7//csv_coco7//fr.cdsp.ddi.elipss.202011.csv')
+```
+
+#Encodage
+```{r}
+#Encodage de sexe
+fct_sexe <- function(x){
+  recod <- fct_collapse(factor(x),
+  "Homme"="1", "Femme"="2")
+  return(recod)
+}
+vague1$eayy_A1<-fct_sexe(vague1$eayy_A1)
+vague2$eayy_A1<-fct_sexe(vague2$eayy_A1)
+vague3$eayy_A1<-fct_sexe(vague3$eayy_A1)
+vague4$eayy_A1<-fct_sexe(vague4$eayy_A1)
+vague5$eayy_A1<-fct_sexe(vague5$eayy_A1)
+vague6$eayy_A1<-fct_sexe(vague6$eayy_A1)
+vague7$eayy_A1<-fct_sexe(vague7$eayy_A1)
+#Encodage de diplome
+fct_dipl <- function(x){
+  recod <- fct_collapse(factor(x),
+  "Aucun"="1", "<Bac"=c("4","5","6","7"),
+  "Bac"=c("8","9"),
+  ">Bac"=c("10","11"))
+  return(recod)
+}
+vague1$eayy_B18_rec<-fct_dipl(vague1$eayy_B18_rec)
+vague2$eayy_B18_rec<-fct_dipl(vague2$eayy_B18_rec)
+vague3$eayy_B18_rec<-fct_dipl(vague3$eayy_B18_rec)
+vague4$eayy_B18_rec<-fct_dipl(vague4$eayy_B18_rec)
+vague5$eayy_B18_rec<-fct_dipl(vague5$eayy_B18_rec)
+vague6$eayy_B18_rec<-fct_dipl(vague6$eayy_B18_rec)
+vague7$eayy_B18_rec<-fct_dipl(vague7$eayy_B18_rec)
+#Encodage d'age
+fct_age <- function(x){
+  recod <- fct_collapse(factor(x),
+  "Moins de 24"="4",
+  "De 25 à 39"=c("5","6","7"),
+  "De 40 à 49"=c("8","9"),
+  "De 50 à 59"=c("10","11"),
+  ">60"=c("12","13","14"))
+  return(recod)
+}
+vague1$eayy_A2A_rec<-fct_age(vague1$eayy_A2A_rec)
+vague2$eayy_A2A_rec<-fct_age(vague2$eayy_A2A_rec)
+vague3$eayy_A2A_rec<-fct_age(vague3$eayy_A2A_rec)
+vague4$eayy_A2A_rec<-fct_age(vague4$eayy_A2A_rec)
+vague5$eayy_A2A_rec<-fct_age(vague5$eayy_A2A_rec)
+vague6$eayy_A2A_rec<-fct_age(vague6$eayy_A2A_rec)
+vague7$eayy_A2A_rec<-fct_age(vague7$eayy_A2A_rec)
+#Encodage de la confiance
+fct_conf <- function(x){
+  recod <- fct_collapse(factor(x),
+  "Confiance"="1", "Pas confiance"="2",
+  "PR"=c("9999","7","8","9996"))
+  return(recod)
+}
+vague1$coco1_q67<-fct_conf(vague1$coco1_q67)
+vague2$eayy_F5<-fct_conf(vague2$eayy_F5)
+vague3$eayy_F5<-fct_conf(vague3$eayy_F5)
+vague4$eayy_F5<-fct_conf(vague4$eayy_F5)
+vague5$eayy_F5<-fct_conf(vague5$eayy_F5)
+vague6$eayy_F5<-fct_conf(vague6$eayy_F5)
+vague7$eayy_F5<-fct_conf(vague7$eayy_F5)
+#Masque
+#Pour vague 5 et 6. Avec le vague 2, c'est l'opinion de proposition de port du masque.
+fct_Masque <- function(x){
+  recod <- fct_collapse(factor(x),
+  "Oui"=c("1","2"),
+  "Non"=c("3","4"),
+  "PR"="9999")
+  return(recod)
+}
+#Dans la rue
+vague6$coco6_Q201_1<-fct_Masque(vague6$coco6_Q201_1)
+#Télétravail
+fct_tele <- function(x){
+  recod <- fct_collapse(factor(x),
+  "Choisi"="1", "Non choisi"="2",
+  "PR"="9999")
+  return(recod)
+}
+vague2$coco2_q96_7<-fct_tele(vague2$coco2_q96_7)
+#Frontière
+vague1$coco1_q70<-fct_collapse(factor(vague1$coco1_q70),
+                               "Tout à fait d’accord"="1",
+                               "Plutôt d’accord"="2",
+                               "Plutôt pas d’accord"="3",
+                               "Pas d’accord du tout"="4",
+                               "Pas répondu"="9999")
+
+
+```
+
