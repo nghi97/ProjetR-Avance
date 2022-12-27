@@ -119,4 +119,79 @@ vague1$coco1_q70<-fct_collapse(factor(vague1$coco1_q70),
 
 
 ```
+#Cartographie
+```{r}
+
+```
+```{r}
+
+```
+##Traitement de données de la cartographie
+###Fichier shapefiles
+Ce sont des fichiers contenant toutes les données pour réaliser des cartes, dans un format (shapefile) très utilisé. Ils ont deux paramètres, dsn (data source name) et layer (la "couche"). Importez les éléments suivants, à l'aide de la fonction readOGR :
+```{r}
+library(sf)
+library(geojsonio)
+library(ggspatial)
+
+```
+```{r}
+library(sf)
+
+france2018<- st_read(dsn="D://workspace Code//R//Carte régions//regions-20180101.shp")
+a=c("94","11","32","75","28","52","24","44","93","53","27","76","84")
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+library(rlist)
+france2018$FrPOM<-list.filter(france2018$code_insee %in% a)
+FR<-france2018[france2018$FrPOM == TRUE,]
+```
+##Importer les fichiers spatiaux geojson
+```{r}
+ggplot()+
+  geom_sf(data=FR)
+```
+```{r}
+france2018<-st_transform(FR,crs = 2154)
+```
+
+
+```{r}
+ggplot()+
+  geom_sf(data = FR)
+```
+#Changer des regions par rapport des enquetes
+```{r}
+keep=c("code_insee","nom","nuts2","surf_km2","geometry")
+FR2<-FR[keep]
+FR2$region2[FR2$code_insee=='11']<-"Région parisienne"
+FR2$region2[FR2$code_insee=='44']<-"Est"
+FR2$region2[FR2$code_insee=='32']<-"Nord"
+FR2$region2[FR2$code_insee=='24']<-"Bassin parisien"
+FR2$region2[FR2$code_insee=='75']<-"Sud-ouest"
+FR2$region2[FR2$code_insee %in% c('28','52','53')]<-"Ouest"
+FR2$region2[FR2$code_insee %in% c('27','84')]<-"Centre-est"
+FR2$region2[FR2$code_insee %in% c('76','93','94')]<-"Méditerranée"
+ggplot()+
+  geom_sf(data = FR2,aes(fill=region2))
+  
+```
+```{r}
+library(dplyr)
+test<-FR2 %>% group_by(region2) %>% 
+  summarise(totalsur=sum(surf_km2))
+```
+```{r}
+ggplot()+
+  geom_sf(data = test)
+```
+
 
